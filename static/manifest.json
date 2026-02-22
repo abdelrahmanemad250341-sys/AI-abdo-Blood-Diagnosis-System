@@ -1,0 +1,20 @@
+{
+    "name": "Abdo HIS System",
+    "short_name": "HIS System",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#00e5ff",
+    "icons": [
+        {
+            "src": "main_telescope.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "main_telescope.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}

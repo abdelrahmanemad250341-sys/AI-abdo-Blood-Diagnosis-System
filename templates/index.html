@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='main_telescope.png') }}">
+    <meta charset="UTF-8">
+    <title>AI Medical System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <nav class="no-print">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="#">Abdo<span>.System</span></a>
+            </div>
+            <ul class="links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#patient">Patient Info</a></li>
+                <li><a href="#examination">Examination</a></li>
+                <li><a href="#report">Medical Report</a></li>
+                <li><a href="#records">Patient Records</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="fa-solid fa-bars hamburg"></i>
+        </div>
+
+        <div class="dropdown no-print">
+            <ul class="links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#patient">Patient Info</a></li>
+                <li><a href="#examination">Examination</a></li>
+                <li><a href="#report">Medical Report</a></li>
+                <li><a href="#records">Patient Records</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <i class="fa-solid fa-xmark cancel"></i>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="no-print">
+        <div class="main-container">
+            <div class="content" data-aos="fade-right">
+                <h1>AI Powered <br> <span>Hematology</span></h1>
+                <div class="typewriter">
+                    Smart Diagnosis <span class="typewriter-text">System</span><label>|</label>
+                </div>
+                <p style="font-size: 1.2rem; line-height: 1.8; color: #ccc; margin-bottom: 30px;">
+                    <strong style="color: white; font-size: 1.3rem;">High Institute of Optics Technology</strong><br>
+                    Graduation Project 2026<br><br>
+                    <span style="color: #00e5ff; font-weight: 600;">Under the supervision of:</span><br>
+                    Prof. Dr. Ibrahim Shoaib & Dr. Samar Mosaad
+                </p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                </div>
+                <div class="btn">
+                    <button onclick="document.getElementById('patient').scrollIntoView();">Start Diagnosis</button>
+                </div>
+            </div>
+            <div class="image" data-aos="fade-left">
+                <img src="{{ url_for('static', filename='main.jpeg') }}" alt="AI Medical Robot">
+            </div>
+        </div>
+    </section>
+
+    <section class="patient-registration no-print" id="patient">
+        <div class="content">
+            <div class="title" data-aos="fade-up"><span>Patient Registration</span></div>
+            <div class="form-container" data-aos="zoom-in">
+                <p class="form-desc">Please fill in the patient's medical details before analysis.</p>
+
+                {% if success_msg %}
+                <div
+                    style="background-color: #2e7d32; color: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; text-align: center; font-size: 1.1rem; border: 1px solid #4CAF50;">
+                    <i class="fas fa-check-circle"></i> {{ success_msg }}
+                </div>
+                {% endif %}
+
+                <form action="/save_patient#patient" method="POST" class="patient-form">
+                    <div class="input-group">
+                        <input type="text" name="patient_name" placeholder="Full Name (اسم المريض الرباعي)" required>
+                        <input type="number" name="patient_age" placeholder="Age (العمر)" required>
+                    </div>
+                    <div class="input-group">
+                        <select name="patient_gender" required>
+                            <option value="" disabled selected>Select Gender (النوع)</option>
+                            <option value="Male">Male (ذكر)</option>
+                            <option value="Female">Female (أنثى)</option>
+                        </select>
+                        <input type="tel" name="patient_phone" placeholder="Phone Number (رقم الهاتف)">
+                    </div>
+                    <div class="input-group">
+                        <select name="blood_type">
+                            <option value="" disabled selected>Blood Type (فصيلة الدم)</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                    <textarea name="medical_history" rows="4"
+                        placeholder="Medical History & Notes (التاريخ المرضي والملاحظات)"></textarea>
+                    <button type="submit" class="submit-btn"><i class="fas fa-user-plus"></i> Save Patient Data</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="examination no-print" id="examination">
+        <div class="content">
+            <div class="title" data-aos="fade-up"><span>Examination Room</span></div>
+
+            <div class="exam-options">
+                <div class="exam-card" data-aos="fade-right">
+                    <h3><i class="fas fa-folder-open"></i> Upload Image</h3>
+                    <p>Upload a saved blood smear image from your device.</p>
+                    <form action="/predict#report" method="POST" enctype="multipart/form-data" class="upload-form">
+                        <input type="file" name="file" accept="image/*" required id="file-upload">
+                        <label for="file-upload" class="custom-file-upload">
+                            <i class="fas fa-cloud-upload-alt"></i> Choose Image
+                        </label>
+                        <button type="submit" class="analyze-btn">Analyze File</button>
+                    </form>
+                </div>
+
+                <div class="vs-divider">OR</div>
+
+                <div class="exam-card" data-aos="fade-left">
+                    <h3><i class="fas fa-microscope"></i> Microscope Camera</h3>
+                    <p>Live feed from connected USB microscope.</p>
+
+                    <div class="camera-container">
+                        <video id="microscopeVideo" autoplay playsinline style="display: none;"></video>
+                        <canvas id="captureCanvas" style="display: none;"></canvas>
+                    </div>
+
+                    <button type="button" id="startCameraBtn" class="analyze-btn"><i class="fas fa-video"></i> Connect
+                        Camera</button>
+
+                    <form action="/predict#report" method="POST" id="cameraForm">
+                        <input type="hidden" name="camera_image" id="camera_image">
+                        <button type="button" id="captureBtn" class="analyze-btn capture-style"
+                            style="display: none;"><i class="fas fa-camera"></i> Capture & Analyze</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="report" id="report">
+        <div class="content">
+            <div class="title no-print" data-aos="fade-up"><span>Medical Report</span></div>
+
+            {% if prediction %}
+            <div class="report-container print-area" data-aos="zoom-in">
+                <div class="report-header">
+                    <h2>AI Hematology Analysis Report</h2>
+                    <hr>
+                </div>
+
+                <div class="report-grid">
+                    <div class="report-left">
+                        <h4>Analyzed Smear Image</h4>
+                        <img src="{{ image_path }}" alt="Blood Smear" class="report-img">
+                        <div class="final-diagnosis">
+                            <h3>Detected Case:</h3>
+                            <h1 class="disease-title">{{ prediction }}</h1>
+                            <p class="confidence-text">Confidence Level: <strong>{{ confidence }}%</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="report-right">
+                        <h4>Detailed Probability (Statistical Analysis)</h4>
+                        <div class="chart-container">
+                            <canvas id="probabilityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-footer no-print">
+                    <button onclick="window.print()" class="print-btn"><i class="fas fa-print"></i> Print PDF
+                        Report</button>
+                </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const ctx = document.getElementById('probabilityChart').getContext('2d');
+                    const probsData = {{ probabilities | tojson | safe
+                }};
+                const labels = Object.keys(probsData);
+                const data = Object.values(probsData);
+                const backgroundColors = data.map(val => val > 80 ? 'rgba(76, 175, 80, 0.8)' : 'rgba(0, 229, 255, 0.8)');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{ label: 'Probability (%)', data: data, backgroundColor: backgroundColors, borderWidth: 1 }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: { color: '#ccc' }, /* تعديل لون الأرقام لتناسب الدارك مود */
+                                grid: { color: '#333' }
+                            },
+                            x: {
+                                ticks: { color: '#ccc' }, /* تعديل لون أسماء الأمراض */
+                                grid: { color: '#333' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: { color: '#ccc' } /* تعديل لون العنوان */
+                            }
+                        }
+                    }
+                });
+                });
+            </script>
+            {% else %}
+            <div class="no-report no-print" data-aos="zoom-in">
+                <i class="fas fa-file-medical-alt" style="font-size: 4rem; color: #444; margin-bottom: 20px;"></i>
+                <h3>No Data Available</h3>
+                <p>Please examine a patient from the Examination Room to generate a report.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="records no-print" id="records">
+        <div class="content">
+            <div class="title" data-aos="fade-up"><span>Patient Records</span></div>
+
+            <div class="table-container" data-aos="fade-up">
+                <table class="patients-table">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Age</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Blood Type</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if patients %}
+                        {% for p in patients %}
+                        <tr>
+                            <td style="font-weight: bold; color: #00e5ff;">{{ p[0] }}</td>
+                            <td>{{ p[1] }}</td>
+                            <td>{{ p[2] }}</td>
+                            <td>{{ p[3] }}</td>
+                            <td>{{ p[4] }}</td>
+                            <td>{{ p[5] }}</td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #aaa;">No patients registered yet.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact no-print" id="contact">
+        <div class="content">
+            <div class="title" data-aos="fade-up"><span>Contact Tech Support</span></div>
+            <div class="text" data-aos="zoom-in">
+                <div class="topic">System Maintenance</div>
+                <p>For any technical issues regarding the AI model or microscope connection, please contact the IT
+                    department.</p>
+                <div class="button"><button>Contact Support</button></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="no-print">
+        <div class="text">
+            <span>Created By <a href="#">Abdelrahman</a> | &#169; 2026 AI Medical Systems</span>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        const fileUpload = document.getElementById('file-upload');
+        if (fileUpload) {
+            fileUpload.addEventListener('change', function () {
+                var fileName = this.files[0].name;
+                var label = document.querySelector('.custom-file-upload');
+                label.innerHTML = '<i class="fas fa-check"></i> ' + fileName;
+                label.style.borderColor = '#00e5ff';
+                label.style.color = '#00e5ff';
+            });
+        }
+
+        const video = document.getElementById('microscopeVideo');
+        const canvas = document.getElementById('captureCanvas');
+        const startBtn = document.getElementById('startCameraBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const cameraInput = document.getElementById('camera_image');
+        const cameraForm = document.getElementById('cameraForm');
+
+        if (startBtn) {
+            startBtn.addEventListener('click', async () => {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    captureBtn.style.display = 'inline-flex';
+                    startBtn.style.display = 'none';
+                } catch (err) {
+                    alert("Error: Cannot access camera/microscope. Check connection and browser permissions.");
+                    console.error(err);
+                }
+            });
+        }
+
+        if (captureBtn) {
+            captureBtn.addEventListener('click', () => {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+
+                const dataUrl = canvas.toDataURL('image/png');
+                cameraInput.value = dataUrl;
+
+                const stream = video.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach(track => track.stop());
+
+                captureBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+                cameraForm.submit();
+            });
+        }
+    </script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("{{ url_for('static', filename='sw.js') }}")
+                .then(reg => console.log('App ready for install!', reg))
+                .catch(err => console.log('Service Worker failed', err));
+        }
+    </script>
+</body>
+
+</html>
